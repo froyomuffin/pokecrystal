@@ -295,23 +295,23 @@ DoPlayerMovement::
 	ret
 
 .HandleWalkAndRun
-  call .CheckStandingStill
-  jr z, .shouldbewalk
-  call .CheckBHeldDown
-  jr z, .shouldbefast
-  jr .shouldbewalk
+	call .CheckStandingStill
+	jr z, .shouldwalk
+	call .CheckBHeldDown
+	jr z, .shouldfast
+	jr .shouldwalk
 
-.shouldbefast
-  ld a, [wPlayerState]
-  cp PLAYER_RUN
-  call nz, .StartRunning
-  jr .fast
+.shouldfast
+	ld a, [wPlayerState]
+	cp PLAYER_RUN
+	call nz, .StartRunning
+	jr .fast
 
-.shouldbewalk
-  ld a, [wPlayerState]
-  cp PLAYER_NORMAL
-  call nz, .StartWalking
-  jr .walk
+.shouldwalk
+	ld a, [wPlayerState]
+	cp PLAYER_NORMAL
+	call nz, .StartWalking
+	jr .walk
 
 .fast
 	ld a, STEP_BIKE
@@ -763,7 +763,7 @@ ENDM
 .CheckStandingStill
 	ld a, [wWalkingDirection]
 	cp STANDING
-  ret
+	ret
 
 .CheckWalkable:
 ; Return 0 if tile a is land. Otherwise, return carry.
@@ -818,19 +818,19 @@ ENDM
 
 .StartRunning:
 	push bc
-  ld a, PLAYER_RUN
-  ld [wPlayerState], a
-  call UpdatePlayerSprite
-  pop bc
-  ret
+	ld a, PLAYER_RUN
+	ld [wPlayerState], a
+	call UpdatePlayerSprite
+	pop bc
+	ret
 
 .StartWalking:
 	push bc
-  ld a, PLAYER_NORMAL
-  ld [wPlayerState], a
-  call UpdatePlayerSprite
-  pop bc
-  ret
+	ld a, PLAYER_NORMAL
+	ld [wPlayerState], a
+	call UpdatePlayerSprite
+	pop bc
+	ret
 
 CheckStandingOnIce::
 	ld a, [wPlayerTurningDirection]
