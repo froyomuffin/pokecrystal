@@ -296,18 +296,18 @@ DoPlayerMovement::
 
 .HandleWalkAndRun
 	call .CheckStandingStill
-	jr z, .shouldwalk
+	jr z, .ensurewalk
 	call .CheckBHeldDown
-	jr z, .shouldfast
-	jr .shouldwalk
+	jr z, .ensurerun
+	jr .ensurewalk
 
-.shouldfast
+.ensurerun
 	ld a, [wPlayerState]
 	cp PLAYER_RUN
 	call nz, .StartRunning
 	jr .fast
 
-.shouldwalk
+.ensurewalk
 	ld a, [wPlayerState]
 	cp PLAYER_NORMAL
 	call nz, .StartWalking

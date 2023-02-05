@@ -1,4 +1,11 @@
-This is a more involved alternative to the [Running shoes](https://github.com/pret/pokecrystal/wiki/Running-Shoes) tutorial with added player animations! Note that you'll need to create sprites for this to be meaningfully different than the other option. I'll provide some guidance as to how to do that at the end.
+This is a more involved alternative to the [Running shoes](https://github.com/pret/pokecrystal/wiki/Running-Shoes) tutorial with added player animations!
+
+It'll looks something like this:
+
+![Gold running around](https://i.imgur.com/dpJVppe.gif)
+
+
+Note that you'll need to create sprites for this to be meaningfully different than the other option. I'll provide some guidance as to how to do that at the end.
 
 I recommend reading this until the end before starting to decide if this is worth your effort. :)
 
@@ -176,13 +183,13 @@ Almost there!
 
 *engine/overworld/player_movement.asm*
 ```diff
-+.shouldrun
++.ensurerun
 +       ld a, [wPlayerState]
 +       cp PLAYER_RUN
 +       call nz, .StartRunning
 +       jr .fast
 +
-+.shouldwalk
++.ensurewalk
 +       ld a, [wPlayerState]
 +       cp PLAYER_NORMAL
 +       call nz, .StartWalking
@@ -193,7 +200,7 @@ Almost there!
         call .DoStep
 ```
 
-Calling `.shouldrun` and `.shouldwalk` instead of the transition functions directly ensures that we only trigger transitions when the player is actually transiting from walk to run or vice versa. For instance, calling `.StartRunning` when the player is already running would cause the sprite to be reloaded via `UpdatePlayerSprite` but that's not the case with `.shouldrun`. Without this intermediate step, noticeable lag is introduced at each step by the continous reloading.
+Calling `.ensurerun` and `.ensurewalk` instead of the transition functions directly ensures that we only trigger transitions when the player is actually transiting from walk to run or vice versa. For instance, calling `.StartRunning` when the player is already running would cause the sprite to be reloaded via `UpdatePlayerSprite` but that's not the case with `.ensurerun`. Without this intermediate step, noticeable lag is introduced at each step by the continous reloading.
 
 #### Next, we introduce a function to coordinate everything we've created above:
 
@@ -205,10 +212,10 @@ DoPlayerMovement::
  
 +.HandleWalkAndRun
 +       call .CheckStandingStill
-+       jr z, .shouldwalk
++       jr z, .ensurewalk
 +       call .CheckBHeldDown
-+       jr z, .shouldfast
-+       jr .shouldwalk
++       jr z, .ensurerun
++       jr .ensurewalk
 ```
 
 Here, we ensure the player returns to the walking state whenever they're standing still and appropriatly jumps to the running state when B is held down or the walking state otherwise.
@@ -254,4 +261,3 @@ And that's it! Have fun! :D
 [sec-4]: #4-creating-logic-for-run-and-walk-state-transitions-with-sprite-transitions
 [sec-5]: #5-triggering-and-un-triggering-player-state-transitions
 [sec-6]: #6-tips-for-creating-running-sprites
-
